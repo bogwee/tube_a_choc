@@ -1,4 +1,4 @@
-# Simulation numérique du tube à choc (Projet MAM4 - Sujet 8)
+# Simulation numérique du tube à choc (Projet MAM4)
 
 <br>
 
@@ -240,4 +240,5 @@ Sujet 8 : *Étude du tube à choc – Problème de Riemann et discontinuités*
 Langages utilisés :
 - **C++** : simulation et calcul numérique  
 - **Python** : visualisation et analyse graphique
+
 
