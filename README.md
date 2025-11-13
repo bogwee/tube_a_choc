@@ -33,9 +33,7 @@ Ces phénomènes constituent un exemple fondamental d’écoulement compressible
 
 ## Schéma du tube à choc
 
-*(Espace réservé pour insérer ton image du tube à choc :)*
-
-![Tube à choc – insérer ici ton image](images/tube.png)
+![Tube à choc](img/tube_choc.png)
 
 <br>
 
@@ -202,7 +200,7 @@ Les scripts permettent de :
 
 Exemple de visualisation (à insérer) :
 
-![Résultats de la simulation](images/resultats.png)
+![Résultats de la simulation](img/choc_exact.png)
 
 <br>
 
@@ -242,3 +240,4 @@ Sujet 8 : *Étude du tube à choc – Problème de Riemann et discontinuités*
 Langages utilisés :
 - **C++** : simulation et calcul numérique  
 - **Python** : visualisation et analyse graphique
+
