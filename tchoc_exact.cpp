@@ -23,23 +23,49 @@ double fms(double Ms) {
     return a_L * ((g + 1)/(g - 1)) * (1 - pow((p_R/p_L)*((2*g/(g+1))*Ms*Ms - (g-1)/(g+1)), (g-1)/(2*g))) + 1/Ms;
 }
 
-double point_fixe(double x0, double tol=1e-6, int max_iter=2000) {
+double dfms(double Ms) {
+    return 2 * a_L * pow((p_R/p_L), (g-1)/(2*g)) * Ms * pow((2*g/(g+1))*Ms*Ms - (g-1)/(g+1), -(g+1)/(2*g)) - 1/(Ms*Ms);
+}
+
+double point_fixe(double x0, double tol=1e-4, int max_iter=2000) {
     double Msk = x0;
     double Msk_1;
+    ofstream file("iter.csv");
+    file << "|Msk_1 - Msk|\n";
     for(int iter = 0; iter < max_iter; iter++) {
         Msk_1 = fms(Msk);
         if(fabs(Msk_1 - Msk) < tol) {
             return Msk_1;
         }
+        file << fabs(Msk_1 - Msk) << '\n';
         Msk = Msk_1;
     }
+    file.close();
     cerr << "Warning: point_fixe did not converge" << endl;
+    return Msk_1;
+}
+
+double newton_raphson(double x0, double tol=1e-4, int max_iter=2000) {
+    double Msk = x0;
+    double Msk_1;
+    ofstream file("iter_nr.csv");
+    file << "|Msk_1 - Msk|\n";
+    for(int iter = 0; iter < max_iter; iter++) {
+        Msk_1 = Msk - fms(Msk)/dfms(Msk);
+        if(fabs(Msk_1 - Msk) < tol) {
+            return Msk_1;
+        }
+        file << fabs(Msk_1 - Msk) << '\n';
+        Msk = Msk_1;
+    }
+    file.close();
+    cerr << "Warning: newton_raphson did not converge" << endl;
     return Msk_1;
 }
 
 vector<vector<double>> tchoc_exact(vector<double> x, double x0, double t) {
     vector<vector<double>> result;
-    double Ms = point_fixe(2.0);
+    double Ms = newton_raphson(2.0);
 
     // Zone 1 (après onde de choc)
     double rho_1 = rho_R * ((g + 1) * Ms * Ms) / ((g - 1) * Ms * Ms + 2);
