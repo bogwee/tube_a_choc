@@ -48,7 +48,7 @@ double point_fixe(double x0, double tol=1e-4, int max_iter=2000) {
 double newton_raphson(double x0, double tol=1e-4, int max_iter=2000) {
     double Msk = x0;
     double Msk_1;
-    ofstream file("iter_nr.csv");
+    ofstream file("iter.csv");
     file << "|Msk_1 - Msk|\n";
     for(int iter = 0; iter < max_iter; iter++) {
         Msk_1 = Msk - fms(Msk)/dfms(Msk);
