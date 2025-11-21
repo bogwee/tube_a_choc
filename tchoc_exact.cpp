@@ -8,33 +8,42 @@ using namespace std;
 const double g = 1.4;
 
 // Zone Gauche
-double p_L = 8.0;
-double rho_L = 10.0/g;
+double p_L = 10.0/g;
+double rho_L = 8.0;
 double a_L = sqrt(g * p_L / rho_L);
 double U_L = 0.0;
 
 // Zone Droite
-double p_R = 1.0;
-double rho_R = 1.0/g;
+double p_R = 1.0/g;
+double rho_R = 1.0;
 double a_R = sqrt(g * p_R / rho_R);
 double U_R = 0.0;
 
-double fms(double Ms) {
+double gms(double Ms) {
     return a_L * ((g + 1)/(g - 1)) * (1 - pow((p_R/p_L)*((2*g/(g+1))*Ms*Ms - (g-1)/(g+1)), (g-1)/(2*g))) + 1/Ms;
 }
 
-double dfms(double Ms) {
-    return 2 * a_L * pow((p_R/p_L), (g-1)/(2*g)) * Ms * pow((2*g/(g+1))*Ms*Ms - (g-1)/(g+1), -(g+1)/(2*g)) - 1/(Ms*Ms);
+double fms(double Ms) {
+    return Ms - 1/Ms - a_L * ((g + 1)/(g - 1)) * (1 - pow((p_R/p_L)*((2*g/(g+1))*Ms*Ms - (g-1)/(g+1)), (g-1)/(2*g)));
 }
 
-double point_fixe(double x0, double tol=1e-4, int max_iter=2000) {
+double dfms(double Ms) {
+    return 1 + 1/(Ms*Ms) - 2 * a_L * pow((p_R/p_L), (g-1)/(2*g)) * Ms * pow((2*g/(g+1))*Ms*Ms - (g-1)/(g+1), (-g-1)/(2*g));
+}
+
+double dfms_numerique(double Ms, double eps) {
+    return (fms(Ms + eps) - fms(Ms - eps)) / (2.0 * eps);
+}
+
+double point_fixe(double x0, double tol=1e-6, int max_iter=100) {
     double Msk = x0;
     double Msk_1;
     ofstream file("iter.csv");
     file << "|Msk_1 - Msk|\n";
     for(int iter = 0; iter < max_iter; iter++) {
-        Msk_1 = fms(Msk);
+        Msk_1 = gms(Msk);
         if(fabs(Msk_1 - Msk) < tol) {
+            cout << "Convergence atteinte en " << iter << " itérations. Ms = " << Msk_1 << endl;
             return Msk_1;
         }
         file << fabs(Msk_1 - Msk) << '\n';
@@ -45,14 +54,15 @@ double point_fixe(double x0, double tol=1e-4, int max_iter=2000) {
     return Msk_1;
 }
 
-double newton_raphson(double x0, double tol=1e-4, int max_iter=2000) {
+double newton_raphson(double x0, double tol=1e-6, int max_iter=100) {
     double Msk = x0;
     double Msk_1;
     ofstream file("iter.csv");
     file << "|Msk_1 - Msk|\n";
     for(int iter = 0; iter < max_iter; iter++) {
-        Msk_1 = Msk - fms(Msk)/dfms(Msk);
+        Msk_1 = Msk - fms(Msk)/dfms_numerique(Msk, tol);
         if(fabs(Msk_1 - Msk) < tol) {
+            cout << "Convergence atteinte en " << iter << " itérations. Ms = " << Msk_1 << endl;
             return Msk_1;
         }
         file << fabs(Msk_1 - Msk) << '\n';
