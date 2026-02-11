@@ -33,5 +33,4 @@ plt.title('Pression (t=0.2s)')
 plt.xlabel('Position (x)')
 plt.ylabel('Pression (P)')
 
-plt.savefig("resultats_tchoc_exact.png")
-
+plt.show()
