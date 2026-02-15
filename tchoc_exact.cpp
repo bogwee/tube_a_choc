@@ -19,39 +19,12 @@ double rho_R = 1.0;
 double a_R = sqrt(g * p_R / rho_R);
 double U_R = 0.0;
 
-double gms(double Ms) {
-    return a_L * ((g + 1)/(g - 1)) * (1 - pow((p_R/p_L)*((2*g/(g+1))*Ms*Ms - (g-1)/(g+1)), (g-1)/(2*g))) + 1/Ms;
-}
-
 double fms(double Ms) {
     return Ms - 1/Ms - a_L * ((g + 1)/(g - 1)) * (1 - pow((p_R/p_L)*((2*g/(g+1))*Ms*Ms - (g-1)/(g+1)), (g-1)/(2*g)));
 }
 
-double dfms(double Ms) {
-    return 1 + 1/(Ms*Ms) - 2 * a_L * pow((p_R/p_L), (g-1)/(2*g)) * Ms * pow((2*g/(g+1))*Ms*Ms - (g-1)/(g+1), (-g-1)/(2*g));
-}
-
 double dfms_numerique(double Ms, double eps) {
     return (fms(Ms + eps) - fms(Ms - eps)) / (2.0 * eps);
-}
-
-double point_fixe(double x0, double tol=1e-6, int max_iter=100) {
-    double Msk = x0;
-    double Msk_1;
-    ofstream file("iter.csv");
-    file << "|Msk_1 - Msk|\n";
-    for(int iter = 0; iter < max_iter; iter++) {
-        Msk_1 = gms(Msk);
-        if(fabs(Msk_1 - Msk) < tol) {
-            cout << "Convergence atteinte en " << iter << " itérations. Ms = " << Msk_1 << endl;
-            return Msk_1;
-        }
-        file << fabs(Msk_1 - Msk) << '\n';
-        Msk = Msk_1;
-    }
-    file.close();
-    cerr << "Warning: point_fixe did not converge" << endl;
-    return Msk_1;
 }
 
 double newton_raphson(double x0, double tol=1e-6, int max_iter=100) {
